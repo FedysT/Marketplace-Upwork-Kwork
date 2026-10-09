@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Orders | Taskly{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4"><h1 class="h2 fw-bold">Orders</h1><p class="text-muted">{% if user.role == "FREELANCER" %}Orders from your customers.{% else %}Your service purchases.{% endif %}</p></div>
+    <div class="filter-tabs mb-3">
+        <a class="{% if not status %}active{% endif %}" href="{% url 'orders' %}">All</a>
+        {% for value,label in statuses %}<a class="{% if status == value %}active{% endif %}" href="?status={{ value }}">{{ label }}</a>{% endfor %}
+    </div>
+    <div class="list-panel">
+    {% for order in orders %}
+        <a href="{% url 'order_detail' order.pk %}" class="order-row">
+            <div class="order-number">#{{ order.pk }}</div>
+            <div class="flex-grow-1"><strong>{{ order.service.title }}</strong><div class="small text-muted">{% if user.role == "FREELANCER" %}From {{ order.customer.display_name }}{% else %}By {{ order.freelancer.display_name }}{% endif %} · {{ order.created_at|date:"M d, Y" }}</div></div>
+            <strong class="me-3">${{ order.price }}</strong>
+            <span class="status-badge status-{{ order.status|lower }}">{{ order.get_status_display }}</span>
+        </a>
+    {% empty %}
+        <div class="empty-state"><i class="bi bi-receipt"></i><h3>No orders here</h3><p>Your order history will appear on this page.</p></div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.pk }} | Taskly{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4"><div><div class="text-muted small">ORDER #{{ order.pk }}</div><h1 class="h3 fw-bold mb-0">{{ order.service.title }}</h1></div><span class="status-badge status-{{ order.status|lower }}">{{ order.get_status_display }}</span></div>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="detail-panel">
+                <div class="d-flex gap-3 align-items-center pb-4 border-bottom">
+                    <img class="order-thumb" src="{{ order.service.image }}" alt="">
+                    <div><div class="small text-muted">Service</div><a class="h5 text-dark text-decoration-none" href="{% url 'service_detail' order.service.pk %}">{{ order.service.title }}</a><div class="small text-muted">Created {{ order.created_at|date:"M d, Y, H:i" }}</div></div>
+                </div>
+                <div class="row g-3 py-4">
+                    <div class="col-sm-6"><span class="small text-muted d-block">Customer</span><a href="{% url 'profile' order.customer.username %}" class="text-dark text-decoration-none fw-semibold">{{ order.customer.display_name }}</a></div>
+                    <div class="col-sm-6"><span class="small text-muted d-block">Freelancer</span><a href="{% url 'profile' order.freelancer.username %}" class="text-dark text-decoration-none fw-semibold">{{ order.freelancer.display_name }}</a></div>
+                </div>
+                <div class="timeline">
+                    <div class="{% if order.status != 'PENDING' %}done{% endif %}"><span>1</span><div><strong>Order placed</strong><small>Customer created the order</small></div></div>
+                    <div class="{% if order.status == 'IN_PROGRESS' or order.status == 'COMPLETED' %}done{% endif %}"><span>2</span><div><strong>Work started</strong><small>Freelancer is working on it</small></div></div>
+                    <div class="{% if order.status == 'COMPLETED' %}done{% endif %}"><span>3</span><div><strong>Completed</strong><small>Order finished</small></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="order-box">
+                <div class="small text-muted">Order total</div><div class="display-6 fw-bold mb-4">${{ order.price }}</div>
+                {% if status_form %}
+                <form method="post">{% csrf_token %}<label class="form-label">Update status</label>{{ status_form.status }}<button class="btn btn-dark w-100 mt-2">Update order</button></form>
+                {% endif %}
+                {% if user == order.customer and order.status == "COMPLETED" and not order.review %}
+                    <a href="{% url 'create_review' order.pk %}" class="btn btn-dark w-100 mt-2">Leave a review</a>
+                {% endif %}
+                {% if user == order.customer and order.status == "PENDING" or user == order.customer and order.status == "ACCEPTED" %}
+                    <form method="post" action="{% url 'cancel_order' order.pk %}" class="mt-2">{% csrf_token %}<button class="btn btn-outline-danger w-100">Cancel order</button></form>
+                {% endif %}
+                {% if order.review %}
+                <div class="review-summary mt-4"><div class="stars">{% for i in "12345" %}{% if forloop.counter <= order.review.rating %}★{% else %}☆{% endif %}{% endfor %}</div><p class="small mb-0 mt-1">{{ order.review.comment }}</p></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

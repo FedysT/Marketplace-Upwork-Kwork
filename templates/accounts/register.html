@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Join Taskly | Taskly{% endblock %}
+{% block content %}
+<div class="auth-wrap"><div class="auth-card"><div class="text-center mb-4"><div class="brand-mark">t</div><h1 class="h3 fw-bold mt-3">Create your account</h1><p class="text-muted">Join as a customer or freelancer.</p></div><form method="post">{% csrf_token %}{{ form|crispy }}<button class="btn btn-dark w-100 py-2 mt-2">Create account</button></form><p class="text-center small text-muted mt-4 mb-0">Already have an account? <a href="{% url 'login' %}" class="text-dark fw-semibold">Log in</a></p></div></div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}My services | Taskly{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-end mb-4"><div><h1 class="h2 fw-bold">My services</h1><p class="text-muted mb-0">Manage what you offer to customers.</p></div><a href="{% url 'create_service' %}" class="btn btn-dark">New service</a></div>
+    <div class="list-panel">
+    {% for service in services %}
+        <div class="manage-row">
+            <img src="{{ service.image }}" alt="">
+            <div class="flex-grow-1"><a href="{% url 'service_detail' service.pk %}" class="fw-semibold text-dark text-decoration-none">{{ service.title }}</a><div class="small text-muted">{{ service.category.name }} · ${{ service.price }} · {{ service.delivery_days }} days</div></div>
+            {% if service.is_active %}<span class="status-badge status-completed">Live</span>{% else %}<span class="status-badge status-cancelled">Hidden</span>{% endif %}
+            <a href="{% url 'edit_service' service.pk %}" class="btn btn-sm btn-outline-dark">Edit</a>
+        </div>
+    {% empty %}
+        <div class="empty-state"><i class="bi bi-box"></i><h3>No services yet</h3><p>Create your first service and start getting orders.</p><a class="btn btn-dark" href="{% url 'create_service' %}">Create service</a></div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

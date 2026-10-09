@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Saved services | Taskly{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4"><h1 class="h2 fw-bold">Saved services</h1><p class="text-muted">Services you want to keep an eye on.</p></div>
+    <div class="row g-4">
+        {% for favorite in favorites %}<div class="col-md-6 col-lg-4">{% include "services/_card.html" with service=favorite.service %}</div>
+        {% empty %}<div class="col-12"><div class="empty-state"><i class="bi bi-heart"></i><h3>Nothing saved yet</h3><p>Tap the heart on a service to save it here.</p></div></div>{% endfor %}
+    </div>
+</div>
+{% endblock %}

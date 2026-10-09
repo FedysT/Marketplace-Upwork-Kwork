@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Categories | Taskly{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="mb-5"><span class="eyebrow">EXPLORE</span><h1 class="display-6 fw-bold mt-2">Find the right category</h1><p class="text-muted">Browse services by the kind of work you need.</p></div>
+    <div class="row g-3">
+        {% for category in categories %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'home' %}?category={{ category.slug }}" class="category-card">
+                <div class="category-icon"><i class="bi bi-grid"></i></div>
+                <div><h2 class="h5 mb-1">{{ category.name }}</h2><p class="small text-muted mb-0">{{ category.service_count }} service{{ category.service_count|pluralize }}</p></div>
+                <i class="bi bi-arrow-up-right ms-auto"></i>
+            </a>
+        </div>
+        {% empty %}
+        <p>No categories yet. Add them from the admin panel.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,264 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Taskly{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg border-bottom bg-white sticky-top">
+      <div class="container py-2">
+        <a
+          class="navbar-brand fw-bold text-dark flex-shrink-0"
+          href="{% url 'home' %}"
+        >
+          <span class="brand-dot"></span>taskly
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+          <form
+            class="search-nav mx-lg-4 my-3 my-lg-0 flex-grow-1"
+            action="{% url 'home' %}"
+            method="get"
+          >
+            <i class="bi bi-search"></i>
+            <input
+              name="q"
+              value="{{ request.GET.q }}"
+              placeholder="Search services"
+            />
+          </form>
+
+          <ul
+            class="navbar-nav ms-auto align-items-lg-center gap-lg-1 flex-shrink-0"
+          >
+            <li class="nav-item text-nowrap">
+              <a class="nav-link" href="{% url 'categories' %}"
+                >Categories</a
+              >
+            </li>
+
+            {% if user.is_authenticated %}
+            <li class="nav-item text-nowrap">
+              <a class="nav-link" href="{% url 'favorites' %}">
+                <i class="bi bi-heart me-1"></i>Saved
+              </a>
+            </li>
+
+            <li class="nav-item text-nowrap">
+              <a class="nav-link" href="{% url 'orders' %}">Orders</a>
+            </li>
+
+            {% if user.role == "FREELANCER" %}
+            <li class="nav-item text-nowrap">
+              <a class="nav-link" href="{% url 'my_services' %}"
+                >My services</a
+              >
+            </li>
+
+            <li class="nav-item ms-lg-2 flex-shrink-0">
+              <a
+                class="btn btn-dark btn-sm px-3 text-nowrap"
+                href="{% url 'create_service' %}"
+              >
+                Create service
+              </a>
+            </li>
+            {% endif %}
+
+            <li class="nav-item dropdown ms-lg-2 text-nowrap">
+              <a
+                class="nav-link dropdown-toggle user-menu"
+                href="#"
+                data-bs-toggle="dropdown"
+              >
+                {% if user.avatar_url %}
+                <img src="{{ user.avatar_url }}" alt="Avatar" />
+                {% else %}
+                <span>{{ user.username|first|upper }}</span>
+                {% endif %} {{ user.username }}
+              </a>
+
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{% url 'profile' user.username %}"
+                    >Profile</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'edit_profile' %}"
+                    >Edit profile</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                </li>
+              </ul>
+            </li>
+            {% else %}
+            <li class="nav-item text-nowrap">
+              <a class="nav-link" href="{% url 'login' %}">Log in</a>
+            </li>
+
+            <li class="nav-item ms-lg-2 text-nowrap">
+              <a class="btn btn-dark btn-sm px-3" href="{% url 'register' %}"
+                >Join Taskly</a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% if messages %}
+    <div class="container pt-3">
+      {% for message in messages %}
+      <div
+        class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% block content %}{% endblock %}
+
+<footer class="border-top mt-5 bg-white">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <a href="{% url 'home' %}" class="text-decoration-none text-dark">
+                    <span class="fw-bold fs-3">
+                        <span class="brand-dot"></span>taskly
+                    </span>
+                </a>
+                <p class="text-muted mt-3 pe-lg-5">
+                    A simple place to find talented professionals and get quality work done.
+                    Connect with freelancers, discover services, and bring your ideas to life.
+                </p>
+
+<div class="d-flex gap-3 mt-3">
+    <a href="https://t.me/toxaSTYLE"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="text-dark fs-5"
+       aria-label="Telegram">
+        <i class="bi bi-telegram"></i>
+    </a>
+
+    <a href="https://instagram.com/fedys.t"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="text-dark fs-5"
+       aria-label="Instagram">
+        <i class="bi bi-instagram"></i>
+    </a>
+
+    <a href="https://www.tiktok.com/@fedys_t"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="text-dark fs-5"
+       aria-label="TikTok">
+        <i class="bi bi-tiktok"></i>
+    </a>
+</div>
+
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <h6 class="fw-bold mb-3">Explore</h6>
+                <ul class="list-unstyled d-grid gap-2">
+                    <li><a href="{% url 'home' %}" class="text-muted text-decoration-none">Home</a></li>
+                    <li><a href="{% url 'categories' %}" class="text-muted text-decoration-none">Categories</a></li>
+                    <li><a href="{% url 'register' %}" class="text-muted text-decoration-none">Join Taskly</a></li>
+                    <li><a href="{% url 'login' %}" class="text-muted text-decoration-none">Log in</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h6 class="fw-bold mb-3">Contact us</h6>
+                <ul class="list-unstyled d-grid gap-3">
+                    <li class="d-flex gap-2">
+                        <i class="bi bi-geo-alt text-muted"></i>
+                        <span class="text-muted">123 Business Avenue, Bukhara, Uzbekistan</span>
+                    </li>
+                    <li class="d-flex gap-2">
+                        <i class="bi bi-telephone text-muted"></i>
+                        <a href="tel:+998901234567" class="text-muted text-decoration-none">+998 90 123 45 67</a>
+                    </li>
+                    <li class="d-flex gap-2">
+                        <i class="bi bi-envelope text-muted"></i>
+                        <a href="mailto:hello@taskly.com" class="text-muted text-decoration-none">hello@taskly.com</a>
+                    </li>
+                    <li class="d-flex gap-2">
+                        <i class="bi bi-clock text-muted"></i>
+                        <span class="text-muted">Mon–Fri, 9:00 AM–6:00 PM</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h6 class="fw-bold mb-3">For professionals</h6>
+                <p class="text-muted small">
+                    Showcase your skills, publish services, and connect with customers.
+                </p>
+                {% if user.is_authenticated and user.role == "FREELANCER" %}
+                    <a href="{% url 'create_service' %}" class="btn btn-dark btn-sm px-3">
+                        Create a service
+                    </a>
+                {% elif not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-dark btn-sm px-3">
+                        Get started
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+            <span class="text-muted small">
+                © {% now "Y" %} Taskly. All rights reserved.
+            </span>
+            <div class="d-flex flex-wrap gap-3">
+                <a href="#" class="text-muted small text-decoration-none">Privacy Policy</a>
+                <a href="#" class="text-muted small text-decoration-none">Terms of Service</a>
+                <a href="mailto:hello@taskly.com" class="text-muted small text-decoration-none">Support</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

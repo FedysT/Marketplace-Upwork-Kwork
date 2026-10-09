@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ service.title }} | Taskly{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <div class="service-detail-image"><img src="{{ service.image }}" alt="{{ service.title }}"></div>
+            <div class="mt-4">
+                <div class="text-muted small mb-2">{{ service.category.name }}</div>
+                <h1 class="h2 fw-bold">{{ service.title }}</h1>
+                <div class="d-flex align-items-center gap-2 mt-3">
+                    {% if service.freelancer.avatar_url %}<img class="avatar" src="{{ service.freelancer.avatar_url }}" alt="">{% else %}<span class="avatar initials">{{ service.freelancer.username|first|upper }}</span>{% endif %}
+                    <div>
+                        <a href="{% url 'profile' service.freelancer.username %}" class="text-dark fw-semibold text-decoration-none">{{ service.freelancer.display_name }}</a>
+                        <div class="small text-muted">{{ service.freelancer.location|default:"Independent freelancer" }}</div>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <h2 class="h5">About this service</h2>
+                <p class="text-secondary service-description">{{ service.description|linebreaksbr }}</p>
+            </div>
+            <section class="mt-5">
+                <h2 class="h5 mb-4">Reviews <span class="text-muted">({{ reviews|length }})</span></h2>
+                {% for order in reviews %}
+                <div class="review-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="avatar avatar-sm initials">{{ order.customer.username|first|upper }}</span>
+                        <div><strong>{{ order.customer.display_name }}</strong><div class="stars">{% for i in "12345" %}{% if forloop.counter <= order.review.rating %}★{% else %}☆{% endif %}{% endfor %}</div></div>
+                    </div>
+                    <p class="mb-0 mt-2 text-secondary">{{ order.review.comment }}</p>
+                </div>
+                {% empty %}
+                <div class="text-muted">No reviews yet. Be the first customer to leave one.</div>
+                {% endfor %}
+            </section>
+        </div>
+        <div class="col-lg-4">
+            <div class="order-box">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div><span class="small text-muted">Starting at</span><div class="display-6 fw-bold">${{ service.price }}</div></div>
+                    <span class="badge bg-light text-dark border">{{ service.delivery_days }} day{{ service.delivery_days|pluralize }}</span>
+                </div>
+                {% if user.is_authenticated %}
+                    {% if user == service.freelancer %}
+                        <a href="{% url 'edit_service' service.pk %}" class="btn btn-dark w-100">Edit service</a>
+                    {% elif user.role == "CUSTOMER" %}
+                        <form method="post" action="{% url 'create_order' service.pk %}">
+                            {% csrf_token %}<button class="btn btn-dark w-100">Order this service</button>
+                        </form>
+                    {% endif %}
+                    <form method="post" action="{% url 'toggle_favorite' service.pk %}" class="mt-2">
+                        {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <button class="btn btn-outline-dark w-100"><i class="bi bi-heart me-1"></i>{% if is_favorite %}Remove from saved{% else %}Save for later{% endif %}</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-dark w-100">Log in to order</a>
+                {% endif %}
+                <div class="order-info mt-4">
+                    <div><i class="bi bi-clock"></i><span>Delivery in {{ service.delivery_days }} days</span></div>
+                    <div><i class="bi bi-shield-check"></i><span>Work through Taskly</span></div>
+                    <div><i class="bi bi-chat"></i><span>Message the freelancer directly</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

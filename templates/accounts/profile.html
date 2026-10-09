@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.display_name }} | Taskly{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="profile-head">
+        <div class="profile-avatar">{% if profile_user.avatar_url %}<img src="{{ profile_user.avatar_url }}" alt="">{% else %}{{ profile_user.username|first|upper }}{% endif %}</div>
+        <div class="flex-grow-1"><span class="eyebrow">{{ profile_user.get_role_display }}</span><h1 class="h2 fw-bold mt-1 mb-1">{{ profile_user.display_name }}</h1><div class="text-muted">@{{ profile_user.username }}{% if profile_user.location %} · {{ profile_user.location }}{% endif %}</div></div>
+        {% if user == profile_user %}<a href="{% url 'edit_profile' %}" class="btn btn-outline-dark">Edit profile</a>{% endif %}
+    </div>
+    {% if profile_user.bio %}<p class="profile-bio mt-4">{{ profile_user.bio }}</p>{% endif %}
+    {% if profile_user.skills %}<div class="skill-list mb-4"><span class="badge text-bg-light border">{{ profile_user.skills }}</span></div>{% endif %}
+    {% if profile_user.role == "FREELANCER" %}
+    <div class="row g-3 mb-5"><div class="col-md-4"><div class="stat-box"><strong>{{ services|length }}</strong><span>Active services</span></div></div><div class="col-md-4"><div class="stat-box"><strong>{{ completed }}</strong><span>Completed orders</span></div></div><div class="col-md-4"><div class="stat-box"><strong>{{ average|floatformat:1 }}</strong><span>Recent rating</span></div></div></div>
+    <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h4 mb-0">Services</h2></div>
+    <div class="row g-4">{% for service in services %}<div class="col-md-6 col-lg-4">{% include "services/_card.html" with service=service %}</div>{% empty %}<p class="text-muted">No active services yet.</p>{% endfor %}</div>
+    <h2 class="h4 mt-5 mb-3">Reviews</h2>
+    {% for review in reviews %}<div class="review-item"><strong>{{ review.customer.display_name }}</strong><div class="stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div><p class="text-secondary mt-2 mb-0">{{ review.comment }}</p></div>{% empty %}<p class="text-muted">No reviews yet.</p>{% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

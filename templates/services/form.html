@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} | Taskly{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="form-page">
+        <div class="mb-4"><span class="eyebrow">FREELANCER</span><h1 class="h2 fw-bold mt-2">{{ page_title }}</h1><p class="text-muted">Keep it clear. Tell customers exactly what you can deliver.</p></div>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3 {% if field.name == 'is_active' %}form-check{% endif %}">
+                {% if field.name == 'is_active' %}{{ field }} <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% else %}<label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% endif %}
+                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            {% endfor %}
+            <div class="d-flex gap-2 mt-4"><button class="btn btn-dark px-4">Save service</button><a href="{% if service %}{% url 'service_detail' service.pk %}{% else %}{% url 'home' %}{% endif %}" class="btn btn-light px-4">Cancel</a></div>
+        </form>
+    </div>
+</div>
+{% endblock %}
