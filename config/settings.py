@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-676pvr0vl_-j97+#ia8ekfb22x%x!vmd&w+uc83epo2q#y&wcf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
+ALLOWED_HOSTS = ['Toxa.pythonanywhere.com', '127.0.0.1', 'localhost', 'testserver']
 
 
 # Application definition
